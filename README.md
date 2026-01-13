@@ -192,8 +192,22 @@ Both interfaces provide:
 
 This project is licensed under the MIT License.
 
-## Contact
+## 📞 Contact
 
-- **Author**: Ajok Kuech Ajok Deng
-- **Email**: ajokkuechajokdeng@gmail.com
-- **GitHub**: [Ajok-2022](https://github.com/Ajok-2022)
+- 👨💻 **Author**: Ajok Kuech Ajok Deng
+- 📧 **Email**: ajokkuechajokdeng@gmail.com
+- 🐱 **GitHub**: [Ajok-2022](https://github.com/Ajok-2022)
+
+---
+
+## 😄 Fun Zone
+
+**Q: Why did the event organizer break up with the calendar?**  
+A: Because it had too many dates! 📅💔
+
+**Q: What do you call an event with no attendees?**  
+A: A "No-Show" event! 🎭
+
+**Developer Confession:** *This API was built with ❤️, lots of ☕, and the occasional 🍕. No events were harmed in the making of this project!*
+
+*P.S. If you find any bugs, they're not bugs - they're "undocumented features"! 🐛➡️✨*
