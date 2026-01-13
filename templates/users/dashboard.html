@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - Event Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav { background: #5a67d8; padding: 1rem 2rem; }
+        .nav a { color: white; text-decoration: none; margin-right: 2rem; padding: 0.5rem 1rem; border-radius: 4px; }
+        .nav a:hover, .nav a.active { background: rgba(255,255,255,0.2); }
+        .container { padding: 2rem; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #667eea; }
+        .stat-label { color: #666; margin-top: 0.5rem; }
+        .section { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+        .event-item { padding: 1rem; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .event-item:last-child { border-bottom: none; }
+        .btn { background: #667eea; color: white; padding: 0.5rem 1rem; text-decoration: none; border-radius: 4px; display: inline-block; }
+        .btn:hover { background: #5a67d8; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎉 Event Management Dashboard</h1>
+        <div>
+            Welcome, {{ user.username }} | 
+            <a href="/users/logout/" style="color: white;">Logout</a>
+        </div>
+    </div>
+    
+    <div class="nav">
+        <a href="/users/dashboard/" class="active">Dashboard</a>
+        <a href="/users/create-event/">Create Event</a>
+        <a href="/swagger/" target="_blank">API Docs</a>
+    </div>
+    
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ my_events.count }}</div>
+                <div class="stat-label">My Events</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ registered_events.count }}</div>
+                <div class="stat-label">Registered Events</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>My Events</h3>
+            {% for event in my_events %}
+                <div class="event-item">
+                    <div>
+                        <strong>{{ event.title }}</strong><br>
+                        <small>{{ event.location }} - {{ event.date_time|date:"M d, Y H:i" }}</small>
+                    </div>
+                    <div>
+                        <span style="color: #666;">{{ event.attendees.count }}/{{ event.capacity }}</span>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No events created yet. <a href="/users/create-event/" class="btn">Create your first event</a></p>
+            {% endfor %}
+        </div>
+        
+        <div class="section">
+            <h3>Registered Events</h3>
+            {% for event in registered_events %}
+                <div class="event-item">
+                    <div>
+                        <strong>{{ event.title }}</strong><br>
+                        <small>{{ event.location }} - {{ event.date_time|date:"M d, Y H:i" }}</small>
+                    </div>
+                    <div>
+                        <span style="color: #28a745;">Registered</span>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No registered events yet.</p>
+            {% endfor %}
+        </div>
+        
+        <div class="section">
+            <h3>Upcoming Events</h3>
+            {% for event in upcoming_events %}
+                <div class="event-item">
+                    <div>
+                        <strong>{{ event.title }}</strong><br>
+                        <small>{{ event.location }} - {{ event.date_time|date:"M d, Y H:i" }}</small>
+                    </div>
+                    <div>
+                        <span style="color: #666;">{{ event.available_spots }} spots left</span>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No upcoming events.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

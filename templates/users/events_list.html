@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Events - EventHub{% endblock %}
+
+{% block breadcrumb %}
+<div class="breadcrumb">
+    <div class="breadcrumb-content">
+        <a href="/events/">Home</a>
+        <span>/</span>
+        <span>Browse Events</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+    .search-section { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+    .search-form { display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; }
+    .form-group { flex: 1; min-width: 200px; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333; }
+    .form-control { width: 100%; padding: 0.75rem; border: 2px solid #e1e5e9; border-radius: 6px; font-size: 1rem; }
+    .form-control:focus { border-color: #3498db; outline: none; }
+    .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 2rem; }
+    .event-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s; }
+    .event-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+    .event-header { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; padding: 1.5rem; }
+    .event-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 0.5rem; }
+    .event-date { opacity: 0.9; font-size: 0.95rem; }
+    .event-body { padding: 1.5rem; }
+    .event-location { color: #666; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .event-description { color: #555; margin-bottom: 1rem; line-height: 1.6; }
+    .event-capacity { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .capacity-bar { background: #e1e5e9; height: 6px; border-radius: 3px; overflow: hidden; flex: 1; margin: 0 1rem; }
+    .capacity-fill { background: linear-gradient(90deg, #27ae60, #2ecc71); height: 100%; transition: width 0.3s; }
+    .event-actions { display: flex; gap: 1rem; align-items: center; }
+    .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+    .status-available { background: #d4edda; color: #155724; }
+    .status-full { background: #f8d7da; color: #721c24; }
+    .no-events { text-align: center; padding: 3rem; color: #666; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+</style>
+
+<div class="search-section">
+    <h2 style="margin-bottom: 1.5rem; color: #2c3e50;">🔍 Discover Amazing Events</h2>
+    <form method="get" class="search-form">
+        <div class="form-group">
+            <label for="search">Search Events</label>
+            <input type="text" id="search" name="search" placeholder="Event title..." value="{{ search }}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="location">Location</label>
+            <select id="location" name="location" class="form-control">
+                <option value="">All Locations</option>
+                {% for location in locations %}
+                    <option value="{{ location }}" {% if location == location_filter %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group" style="flex: none;">
+            <button type="submit" class="btn btn-primary">Search Events</button>
+        </div>
+    </form>
+</div>
+
+<div class="events-grid">
+    {% for event in events %}
+        <div class="event-card">
+            <div class="event-header">
+                <div class="event-title">{{ event.title }}</div>
+                <div class="event-date">📅 {{ event.date_time|date:"M d, Y - H:i" }}</div>
+            </div>
+            <div class="event-body">
+                <div class="event-location">
+                    <span>📍</span>
+                    <span>{{ event.location }}</span>
+                </div>
+                <div class="event-description">{{ event.description|truncatewords:20 }}</div>
+                
+                <div class="event-capacity">
+                    <span style="font-size: 0.9rem; color: #666;">{{ event.attendees.count }}/{{ event.capacity }}</span>
+                    <div class="capacity-bar">
+                        <div class="capacity-fill" style="width: {% widthratio event.attendees.count event.capacity 100 %}%"></div>
+                    </div>
+                    {% if event.is_full %}
+                        <span class="status-badge status-full">Full</span>
+                    {% else %}
+                        <span class="status-badge status-available">Available</span>
+                    {% endif %}
+                </div>
+                
+                <div class="event-actions">
+                    <a href="/events/{{ event.id }}/" class="btn btn-primary btn-sm">View Details</a>
+                    <span style="color: #666; font-size: 0.85rem;">by {{ event.organizer.username }}</span>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="no-events" style="grid-column: 1 / -1;">
+            <h3>🔍 No Events Found</h3>
+            <p>Try adjusting your search criteria or check back later for new events.</p>
+            {% if user.is_authenticated %}
+                <a href="/users/create-event/" class="btn btn-primary" style="margin-top: 1rem;">Create the First Event</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

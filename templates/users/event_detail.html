@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }} - EventHub{% endblock %}
+
+{% block breadcrumb %}
+<div class="breadcrumb">
+    <div class="breadcrumb-content">
+        <a href="/events/">Browse Events</a>
+        <span>/</span>
+        <span>{{ event.title }}</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+    .event-hero { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+    .event-header { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; padding: 3rem 2rem; text-align: center; }
+    .event-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 1rem; }
+    .event-subtitle { font-size: 1.2rem; opacity: 0.9; }
+    .event-content { padding: 2rem; }
+    .event-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .detail-card { background: #f8f9fa; padding: 1.5rem; border-radius: 8px; text-align: center; }
+    .detail-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .detail-label { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .detail-value { font-weight: bold; color: #333; }
+    .section { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+    .capacity-bar { background: #e1e5e9; height: 12px; border-radius: 6px; overflow: hidden; margin: 1rem 0; }
+    .capacity-fill { background: linear-gradient(90deg, #27ae60, #2ecc71); height: 100%; transition: width 0.3s; }
+    .registration-section { text-align: center; }
+    .status-badge { padding: 8px 16px; border-radius: 20px; font-weight: bold; margin: 1rem 0; display: inline-block; }
+    .status-available { background: #d4edda; color: #155724; }
+    .status-full { background: #f8d7da; color: #721c24; }
+    .status-registered { background: #d1ecf1; color: #0c5460; }
+    .action-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+</style>
+
+<div class="event-hero">
+    <div class="event-header">
+        <div class="event-title">{{ event.title }}</div>
+        <div class="event-subtitle">{{ event.date_time|date:"l, F d, Y at H:i" }}</div>
+    </div>
+    
+    <div class="event-content">
+        <div class="event-details">
+            <div class="detail-card">
+                <div class="detail-icon">📅</div>
+                <div class="detail-label">Date & Time</div>
+                <div class="detail-value">{{ event.date_time|date:"M d, Y" }}<br>{{ event.date_time|date:"H:i" }}</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-icon">📍</div>
+                <div class="detail-label">Location</div>
+                <div class="detail-value">{{ event.location }}</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-icon">👥</div>
+                <div class="detail-label">Capacity</div>
+                <div class="detail-value">{{ event.attendees.count }}/{{ event.capacity }}</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-icon">👨💼</div>
+                <div class="detail-label">Organizer</div>
+                <div class="detail-value">{{ event.organizer.username }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3 style="margin-bottom: 1rem; color: #2c3e50;">📝 About This Event</h3>
+    <p style="line-height: 1.8; color: #555;">{{ event.description }}</p>
+</div>
+
+<div class="section">
+    <h3 style="margin-bottom: 1rem; color: #2c3e50;">📊 Event Capacity</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <span><strong>{{ event.attendees.count }}</strong> registered</span>
+        <span><strong>{{ event.available_spots }}</strong> spots remaining</span>
+    </div>
+    <div class="capacity-bar">
+        <div class="capacity-fill" style="width: {% widthratio event.attendees.count event.capacity 100 %}%"></div>
+    </div>
+</div>
+
+<div class="section registration-section">
+    {% if not user.is_authenticated %}
+        <h3>🎟️ Ready to Join?</h3>
+        <p style="margin: 1rem 0; color: #666;">Please login or register to participate in this event.</p>
+        <div class="action-buttons">
+            <a href="/users/login/?next=/events/{{ event.id }}/" class="btn btn-primary">Login to Register</a>
+            <a href="/users/register/" class="btn btn-outline">Create Account</a>
+        </div>
+    
+    {% elif event.organizer == user %}
+        <div class="status-badge" style="background: #fff3cd; color: #856404;">👑 You are the organizer</div>
+        <p style="color: #666; margin: 1rem 0;">Manage your event using the options below.</p>
+        <div class="action-buttons">
+            <a href="/users/dashboard/" class="btn btn-primary">Edit Event</a>
+            <form method="post" action="/events/{{ event.id }}/delete/" style="display: inline;" 
+                  onsubmit="return confirm('⚠️ Are you sure you want to delete this event? This action cannot be undone and will remove all registrations.')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">🗑️ Delete Event</button>
+            </form>
+        </div>
+    
+    {% elif not event.is_upcoming %}
+        <div class="status-badge status-full">⏰ Event has passed</div>
+        <p style="color: #666; margin-top: 1rem;">Registration is no longer available for past events.</p>
+    
+    {% elif event.is_full %}
+        <div class="status-badge status-full">🚫 Event is Full</div>
+        <p style="color: #666; margin-top: 1rem;">This event has reached maximum capacity.</p>
+    
+    {% elif is_registered %}
+        <div class="status-badge status-registered">✅ You're registered!</div>
+        <p style="color: #666; margin: 1rem 0;">You're all set! We'll see you at the event.</p>
+        <div class="action-buttons">
+            <a href="/events/{{ event.id }}/unregister/" class="btn btn-danger" 
+               onclick="return confirm('Are you sure you want to unregister from this event?')">
+               Unregister
+            </a>
+        </div>
+    
+    {% else %}
+        <div class="status-badge status-available">🎉 Registration Open</div>
+        <p style="color: #666; margin: 1rem 0;">Join {{ event.attendees.count }} others attending this event!</p>
+        <div class="action-buttons">
+            <a href="/events/{{ event.id }}/register/" class="btn btn-success">Register for Event</a>
+        </div>
+    {% endif %}
+
+    <div class="action-buttons" style="margin-top: 2rem;">
+        <a href="/events/" class="btn btn-outline">← Back to Events</a>
+        {% if user.is_authenticated %}
+            <a href="/users/my-registrations/" class="btn btn-secondary">My Registrations</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

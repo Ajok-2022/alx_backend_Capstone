@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events - Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
+        .header { background: #007cba; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav { background: #0056b3; padding: 1rem 2rem; }
+        .nav a { color: white; text-decoration: none; margin-right: 2rem; padding: 0.5rem 1rem; border-radius: 4px; }
+        .nav a:hover, .nav a.active { background: rgba(255,255,255,0.2); }
+        .container { padding: 2rem; }
+        .events-table { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: bold; }
+        .status-upcoming { color: #28a745; }
+        .status-past { color: #6c757d; }
+        .status-full { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎉 Event Management Admin</h1>
+        <div>
+            Welcome, {{ user.username }} | 
+            <a href="/admin-panel/logout/" style="color: white;">Logout</a>
+        </div>
+    </div>
+    
+    <div class="nav">
+        <a href="/admin-panel/dashboard/">Dashboard</a>
+        <a href="/admin-panel/events/" class="active">Events</a>
+        <a href="/admin-panel/users/">Users</a>
+        <a href="/admin-panel/registrations/">Registrations</a>
+        <a href="/swagger/" target="_blank">API Docs</a>
+    </div>
+    
+    <div class="container">
+        <h2>All Events</h2>
+        <div class="events-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Organizer</th>
+                        <th>Date & Time</th>
+                        <th>Location</th>
+                        <th>Capacity</th>
+                        <th>Registered</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td><strong>{{ event.title }}</strong></td>
+                        <td>{{ event.organizer.username }}</td>
+                        <td>{{ event.date_time|date:"M d, Y H:i" }}</td>
+                        <td>{{ event.location }}</td>
+                        <td>{{ event.capacity }}</td>
+                        <td>{{ event.attendees.count }}</td>
+                        <td>
+                            {% if event.is_full %}
+                                <span class="status-full">Full</span>
+                            {% elif event.is_upcoming %}
+                                <span class="status-upcoming">Upcoming</span>
+                            {% else %}
+                                <span class="status-past">Past</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #666;">No events found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

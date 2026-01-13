@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users - Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f8f9fa; }
+        .header { background: #007cba; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav { background: #0056b3; padding: 1rem 2rem; }
+        .nav a { color: white; text-decoration: none; margin-right: 2rem; padding: 0.5rem 1rem; border-radius: 4px; }
+        .nav a:hover, .nav a.active { background: rgba(255,255,255,0.2); }
+        .container { padding: 2rem; }
+        .users-table { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: bold; }
+        .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; }
+        .badge-staff { background: #ffc107; color: #000; }
+        .badge-user { background: #28a745; color: white; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎉 Event Management Admin</h1>
+        <div>
+            Welcome, {{ user.username }} | 
+            <a href="/admin-panel/logout/" style="color: white;">Logout</a>
+        </div>
+    </div>
+    
+    <div class="nav">
+        <a href="/admin-panel/dashboard/">Dashboard</a>
+        <a href="/admin-panel/events/">Events</a>
+        <a href="/admin-panel/users/" class="active">Users</a>
+        <a href="/admin-panel/registrations/">Registrations</a>
+        <a href="/swagger/" target="_blank">API Docs</a>
+    </div>
+    
+    <div class="container">
+        <h2>All Users</h2>
+        <div class="users-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Date Joined</th>
+                        <th>Events Created</th>
+                        <th>Events Attending</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td><strong>{{ u.username }}</strong></td>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.date_joined|date:"M d, Y" }}</td>
+                        <td>{{ u.organized_events.count }}</td>
+                        <td>{{ u.attending_events.count }}</td>
+                        <td>
+                            {% if u.is_staff %}
+                                <span class="badge badge-staff">Staff</span>
+                            {% else %}
+                                <span class="badge badge-user">User</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #666;">No users found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
