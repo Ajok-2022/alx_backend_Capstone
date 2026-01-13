@@ -6,15 +6,20 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from .models import Event, EventRegistration
 from .serializers import EventSerializer, EventRegistrationSerializer
-from .filters import EventFilter
 
 class EventListCreateView(generics.ListCreateAPIView):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
-    filterset_class = EventFilter
     
     def get_queryset(self):
-        return Event.objects.all()
+        queryset = Event.objects.all()
+        title = self.request.query_params.get('title')
+        location = self.request.query_params.get('location')
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+        if location:
+            queryset = queryset.filter(location__icontains=location)
+        return queryset
     
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)
@@ -37,10 +42,16 @@ class EventDetailView(generics.RetrieveUpdateDestroyAPIView):
 class UpcomingEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
-    filterset_class = EventFilter
     
     def get_queryset(self):
-        return Event.objects.filter(date_time__gt=timezone.now())
+        queryset = Event.objects.filter(date_time__gt=timezone.now())
+        title = self.request.query_params.get('title')
+        location = self.request.query_params.get('location')
+        if title:
+            queryset = queryset.filter(title__icontains=title)
+        if location:
+            queryset = queryset.filter(location__icontains=location)
+        return queryset
 
 class MyEventsView(generics.ListAPIView):
     serializer_class = EventSerializer
