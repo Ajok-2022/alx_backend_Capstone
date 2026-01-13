@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management API</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; margin-bottom: 3rem; }
+        .header h1 { color: #2c3e50; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .header p { color: #7f8c8d; font-size: 1.2rem; }
+        .card { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .endpoints { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .endpoint-group h3 { color: #3498db; margin-bottom: 1rem; font-size: 1.3rem; }
+        .endpoint { background: #ecf0f1; padding: 0.8rem; margin-bottom: 0.5rem; border-radius: 4px; font-family: monospace; }
+        .method { color: #e74c3c; font-weight: bold; margin-right: 0.5rem; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .feature { text-align: center; padding: 1.5rem; }
+        .feature h4 { color: #2c3e50; margin-bottom: 0.5rem; }
+        .btn { display: inline-block; background: #3498db; color: white; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 4px; margin: 0.5rem; transition: background 0.3s; }
+        .btn:hover { background: #2980b9; }
+        .footer { text-align: center; margin-top: 3rem; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Event Management API</h1>
+            <p>A comprehensive REST API for managing events with authentication and registration</p>
+        </div>
+
+        <div class="card">
+            <h2>🚀 Quick Start</h2>
+            <p>Welcome to the Event Management API! This API provides complete event management functionality including user authentication, event CRUD operations, and event registration system.</p>
+            <div style="margin-top: 1rem;">
+                <a href="/admin/" class="btn">Admin Panel</a>
+                <a href="/swagger/" class="btn">Swagger API Docs</a>
+                <a href="/redoc/" class="btn">ReDoc API Docs</a>
+                <a href="https://github.com/Ajok-2022/alx_backend_Capstone" class="btn">Documentation</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 API Endpoints</h2>
+            <div class="endpoints">
+                <div class="endpoint-group">
+                    <h3>🔐 Authentication</h3>
+                    <div class="endpoint"><span class="method">POST</span>/api/auth/register/</div>
+                    <div class="endpoint"><span class="method">POST</span>/api/auth/login/</div>
+                    <div class="endpoint"><span class="method">GET</span>/api/auth/profile/</div>
+                </div>
+                <div class="endpoint-group">
+                    <h3>🎪 Events</h3>
+                    <div class="endpoint"><span class="method">GET</span>/api/events/</div>
+                    <div class="endpoint"><span class="method">POST</span>/api/events/</div>
+                    <div class="endpoint"><span class="method">GET</span>/api/events/{id}/</div>
+                    <div class="endpoint"><span class="method">PUT</span>/api/events/{id}/</div>
+                    <div class="endpoint"><span class="method">DELETE</span>/api/events/{id}/</div>
+                </div>
+                <div class="endpoint-group">
+                    <h3>📅 Event Management</h3>
+                    <div class="endpoint"><span class="method">GET</span>/api/events/upcoming/</div>
+                    <div class="endpoint"><span class="method">GET</span>/api/events/my-events/</div>
+                    <div class="endpoint"><span class="method">POST</span>/api/events/{id}/register/</div>
+                    <div class="endpoint"><span class="method">DELETE</span>/api/events/{id}/unregister/</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>✨ Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <h4>🔒 Session Authentication</h4>
+                    <p>Secure user registration and login system</p>
+                </div>
+                <div class="feature">
+                    <h4>📊 Event CRUD</h4>
+                    <p>Complete event management with permissions</p>
+                </div>
+                <div class="feature">
+                    <h4>🎫 Registration System</h4>
+                    <p>Event registration with capacity management</p>
+                </div>
+                <div class="feature">
+                    <h4>🔍 Search & Filter</h4>
+                    <p>Filter events by title, location, and date</p>
+                </div>
+                <div class="feature">
+                    <h4>📄 Pagination</h4>
+                    <p>Efficient handling of large datasets</p>
+                </div>
+                <div class="feature">
+                    <h4>⚡ REST API</h4>
+                    <p>RESTful design with proper HTTP methods</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Built with Django REST Framework | Version 1.0.0</p>
+        </div>
+    </div>
+</body>
+</html>
