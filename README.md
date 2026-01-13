@@ -62,35 +62,67 @@ A comprehensive Django REST Framework API for managing events with user authenti
 
 ## API Endpoints
 
-### Authentication
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register/` | User registration |
-| POST | `/api/auth/login/` | User login |
-| GET/PUT | `/api/auth/profile/` | User profile management |
+### User Management
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| POST | `/api/users/register/` | Create new user account | Public |
+| POST | `/api/users/login/` | User authentication | Public |
+| POST | `/api/users/logout/` | End user session | Required |
+| GET | `/api/users/profile/` | Retrieve user profile | Required |
+| PUT | `/api/users/profile/` | Update user profile | Required |
 
-### Events
+### Event Management
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| GET | `/api/events/` | List all events (with filtering) | Public |
+| POST | `/api/events/` | Create new event | Required |
+| GET | `/api/events/{id}/` | Get event details | Public |
+| PUT | `/api/events/{id}/` | Update event | Required (Organizer) |
+| DELETE | `/api/events/{id}/` | Delete event | Required (Organizer) |
+| GET | `/api/events/upcoming/` | List upcoming events | Public |
+| GET | `/api/events/my-events/` | List user's created events | Required |
+
+### Event Registration
+| Method | Endpoint | Description | Authentication |
+|--------|----------|-------------|----------------|
+| POST | `/api/events/{id}/register/` | Register for event | Required |
+| DELETE | `/api/events/{id}/unregister/` | Unregister from event | Required |
+
+### Web Interface
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/events/` | List all events (with filtering) |
-| POST | `/api/events/` | Create new event |
-| GET | `/api/events/{id}/` | Get event details |
-| PUT | `/api/events/{id}/` | Update event (organizer only) |
-| DELETE | `/api/events/{id}/` | Delete event (organizer only) |
-| GET | `/api/events/upcoming/` | List upcoming events |
-| GET | `/api/events/my-events/` | List user's created events |
-| POST | `/api/events/{id}/register/` | Register for event |
-| DELETE | `/api/events/{id}/unregister/` | Unregister from event |
+| GET/POST | `/users/register/` | User registration page |
+| GET/POST | `/users/login/` | User login page |
+| GET | `/users/logout/` | User logout |
+| GET | `/users/dashboard/` | User dashboard |
+| GET/POST | `/users/create-event/` | Create event page |
+| GET | `/users/my-registrations/` | User's event registrations |
+| GET/POST | `/users/profile/` | User profile management |
+| GET | `/events/` | Browse all events |
+| GET | `/events/{id}/` | Event detail page |
+| POST | `/events/{id}/register/` | Register for event |
+| POST | `/events/{id}/unregister/` | Unregister from event |
+| POST | `/events/{id}/delete/` | Delete event (organizer only) |
 
 ## API Usage Examples
 
 ### Register a New User
 ```bash
-curl -X POST http://127.0.0.1:8000/api/auth/register/ \
+curl -X POST http://127.0.0.1:8000/api/users/register/ \
   -H "Content-Type: application/json" \
   -d '{
     "username": "testuser",
     "email": "test@example.com",
+    "password": "securepassword123"
+  }'
+```
+
+### Login User
+```bash
+curl -X POST http://127.0.0.1:8000/api/users/login/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "testuser",
     "password": "securepassword123"
   }'
 ```
@@ -115,6 +147,11 @@ curl "http://127.0.0.1:8000/api/events/?title=tech&location=center"
 
 # Get upcoming events only
 curl "http://127.0.0.1:8000/api/events/upcoming/"
+```
+
+### Delete an Event
+```bash
+curl -X DELETE http://127.0.0.1:8000/api/events/1/
 ```
 
 ## Query Parameters
